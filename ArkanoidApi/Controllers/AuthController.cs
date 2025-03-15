@@ -24,10 +24,20 @@ namespace ArkanoidApi.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginRequest request)
         {
+            // Проверяем, существует ли пользователь с таким логином
             var user = _context.Users.FirstOrDefault(u => u.Login == request.Login);
-            if (user == null || user.Password != request.Password)
-                return Unauthorized();
+            if (user == null)
+            {
+                return NotFound(new { error = "Пользователь не найден" });
+            }
 
+            // Проверяем пароль
+            if (user.Password != request.Password)
+            {
+                return Unauthorized(new { error = "Неверный пароль" });
+            }
+
+            // Генерируем токен и возвращаем данные пользователя
             var token = GenerateJwtToken(user);
             return Ok(new { token, login = user.Login, coins = user.Coins });
         }

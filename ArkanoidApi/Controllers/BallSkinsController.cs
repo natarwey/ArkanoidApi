@@ -20,7 +20,7 @@ namespace ArkanoidApi.Controllers
         public IActionResult GetAll()
         {
             var ballSkins = _context.BallSkins.ToList();
-            return Ok(ballSkins);
+            return new OkObjectResult(new { ballSkins = ballSkins });
         }
 
         // Получить скин мяча по ID
